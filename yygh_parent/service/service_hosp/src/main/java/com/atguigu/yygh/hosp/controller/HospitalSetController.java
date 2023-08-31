@@ -19,6 +19,7 @@ import java.util.Random;
 @Api(tags = "hospital set controll")
 @RestController
 @RequestMapping("/admin/hosp/hospitalSet")
+@CrossOrigin
 public class HospitalSetController {
 
     @Autowired
@@ -109,6 +110,29 @@ public class HospitalSetController {
     @DeleteMapping("batchRemove")
     public Result batchRemoveHospitalSet(@RequestBody List<Long> idList) {
         hospitalSetService.removeByIds(idList);
+        return Result.ok();
+    }
+
+    //8 lock and unlock by setting status
+    @PutMapping("lockHospitalSet/{id}/{status}")
+    public Result lockHospitalSet(@PathVariable Long id,
+                                  @PathVariable Integer status) {
+        // get info by id
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        // set status
+        hospitalSet.setStatus(status);
+        // invoke method
+        hospitalSetService.updateById(hospitalSet);
+        return Result.ok();
+    }
+
+    //9 send key
+    @PutMapping("sendKey/{id}")
+    public Result lockHospitalSet(@PathVariable Long id) {
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        String signKey = hospitalSet.getSignKey();
+        String hoscode = hospitalSet.getHoscode();
+
         return Result.ok();
     }
 
